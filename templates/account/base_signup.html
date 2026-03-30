@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dr. Sheba - Register{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .primary { color: #2563EB; }
+        .primary-bg { background-color: #2563EB; }
+        .primary-hover:hover { background-color: #1d4ed8; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    {% block content %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,147 @@
+{% extends "account/base.html" %}
+
+{% block title %}Dr. Sheba - Find & Book Doctors Instantly{% endblock %}
+
+{% block content %}
+<div class="w-full">
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
+        <div class="relative max-w-6xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Find & Book a Doctor Instantly</h1>
+            <p class="text-xl text-blue-100 mb-8">Your health is our priority. Connect with top doctors near you.</p>
+
+            <!-- Search Bar -->
+            <form class="max-w-2xl mx-auto">
+                <div class="flex flex-col md:flex-row gap-3 bg-white rounded-xl p-2">
+                    <input type="text" placeholder="Search by doctor name or specialization..."
+                        class="flex-1 px-4 py-3 rounded-lg text-gray-700 outline-none">
+                    <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Specializations Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Our Specializations</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {% for spec in specializations %}
+                <a href="#" class="bg-white rounded-xl p-6 text-center shadow-md hover:shadow-lg transition group">
+                    <div class="w-14 h-14 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition">
+                        <svg class="w-7 h-7 text-blue-600 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">{{ spec.name }}</h3>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">How It Works</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Search Doctor</h3>
+                    <p class="text-gray-500">Find the right doctor based on specialization, name, or location</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Book Slot</h3>
+                    <p class="text-gray-500">Choose a convenient time slot and book your appointment</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Get Confirmed</h3>
+                    <p class="text-gray-500">Receive instant confirmation and get treated</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Doctors Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Featured Doctors</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                {% for doctor in featured_doctors %}
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="h-32 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+                    <div class="p-6 -mt-12">
+                        <div class="w-20 h-20 mx-auto bg-white rounded-full p-1 shadow">
+                            <div class="w-full h-full bg-gray-200 rounded-full"></div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-center text-gray-900 mt-2">Dr. {{ doctor.user.get_full_name }}</h3>
+                        <p class="text-blue-600 text-center text-sm">{{ doctor.specializations.first.name|default:"General" }}</p>
+                        <div class="flex items-center justify-center gap-2 mt-2">
+                            <span class="text-yellow-500">★</span>
+                            <span class="text-gray-600">{{ doctor.rating }}</span>
+                            <span class="text-gray-400 text-sm">({{ doctor.total_reviews }} reviews)</span>
+                        </div>
+                        <p class="text-center text-gray-900 font-bold mt-3">${{ doctor.consultation_fee }}</p>
+                        <button class="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-3 text-center py-8">
+                    <p class="text-gray-500">No featured doctors yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="py-12 bg-blue-600 text-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-3 gap-8 text-center">
+                <div>
+                    <div class="text-3xl font-bold">500+</div>
+                    <div class="text-blue-200">Doctors</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold">10,000+</div>
+                    <div class="text-blue-200">Patients</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold">50+</div>
+                    <div class="text-blue-200">Specializations</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-green-50">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Join as a Doctor</h2>
+            <p class="text-gray-600 mb-8">Grow your practice with thousands of patients looking for quality healthcare.</p>
+            <a href="{% url 'doctor_signup' %}" class="inline-block bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                Register as Doctor
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "account/base.html" %}
+
+{% block content %}
+<div class="signup-container">
+    <h2>Patient Registration</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register as Patient</button>
+    </form>
+</div>
+{% endblock %}

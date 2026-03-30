@@ -1,0 +1,30 @@
+{% for doctor in page_obj %}
+<a href="{% url 'doctors:detail' doctor.pk %}" class="block bg-white rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden">
+    <div class="h-24 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+    <div class="p-5 -mt-12">
+        <div class="w-20 h-20 mx-auto bg-white rounded-full p-1 shadow">
+            <div class="w-full h-full bg-gray-200 rounded-full"></div>
+        </div>
+        <h3 class="text-base font-semibold text-center text-gray-900 mt-2">
+            Dr. {{ doctor.user.get_full_name|default:doctor.user.username }}
+        </h3>
+        <div class="flex flex-wrap justify-center gap-1 mt-2">
+            {% for spec in doctor.specializations.all|slice:":2" %}
+            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ spec.name }}</span>
+            {% endfor %}
+        </div>
+        <div class="flex items-center justify-center gap-1 mt-2">
+            <span class="text-yellow-500">★</span>
+            <span class="text-gray-700 font-medium text-sm">{{ doctor.rating }}</span>
+        </div>
+        <div class="flex justify-between items-center mt-3 pt-3 border-t text-sm">
+            <span class="text-gray-500">{{ doctor.years_of_experience }} yrs</span>
+            <span class="text-blue-600 font-bold">${{ doctor.consultation_fee }}</span>
+        </div>
+    </div>
+</a>
+{% empty %}
+<div class="col-span-3 text-center py-8">
+    <p class="text-gray-500">No doctors found.</p>
+</div>
+{% endfor %}
