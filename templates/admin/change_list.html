@@ -1,0 +1,127 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} - Dr. Sheba Admin{% endblock %}
+
+{% block page_actions %}
+<div class="flex gap-3">
+    {% if show_admin_actions %}
+    <button onclick="document.getElementById('admin_action_form').submit()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">
+        Go
+    </button>
+    {% endif %}
+    {% if add_url %}
+    <a href="{{ add_url }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Add {{ model_name }}
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content_inner %}
+<div class="p-6">
+    <!-- Filters Section -->
+    {% if cl.has_filters %}
+    <div class="mb-6 flex flex-wrap gap-4 items-center">
+        <span class="text-sm font-medium text-gray-700">Filter by:</span>
+        {% for spec in cl.filter_specs %}
+        <div class="relative">
+            {% with spec.field|add:"__"|add:spec.field|lookup_filter as field_name %}
+            {% include "admin/filter.html" with spec=spec field=cl.get_model_fieldspecs|get_item:spec.field %}
+            {% endwith %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form id="admin_action_form" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" id="admin_action">
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="border-b border-gray-200">
+                        {% if show_admin_actions %}
+                        <th class="w-12 py-3 px-4">
+                            <input type="checkbox" id="action-toggle" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        </th>
+                        {% endif %}
+                        {% for header in result_list.headers %}
+                        <th class="py-3 px-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                            {{ header|capfirst }}
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for result in result_list %}
+                    <tr class="hover:bg-gray-50 transition">
+                        {% if show_admin_actions %}
+                        <td class="py-3 px-4">
+                            <input type="checkbox" name="_selected_action" value="{{ result.pk }}" class="action-select rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        </td>
+                        {% endif %}
+                        {% for cell in result %}
+                        <td class="py-3 px-4 text-gray-700 {% if forloop.last %}text-right{% endif %}">
+                            {{ cell }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="100%" class="py-12 text-center text-gray-500">
+                            <div class="flex flex-col items-center">
+                                <svg class="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <p>No results found.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination_required %}
+        <div class="mt-6 flex items-center justify-between">
+            <div class="text-sm text-gray-500">
+                {% if result_count > 0 %}
+                    Showing {{ result_list.start_index }} to {{ result_list.end_index }} of {{ result_count }} entries
+                {% endif %}
+            </div>
+            <div class="flex gap-1">
+                {% if result_list.has_previous %}
+                <a href="?p=1" class="px-3 py-1 rounded hover:bg-gray-100">&laquo;</a>
+                <a href="?p={{ result_list.previous_page_number }}" class="px-3 py-1 rounded hover:bg-gray-100">Previous</a>
+                {% endif %}
+
+                {% for page in result_list.paginator.page_range %}
+                    {% if page == result_list.number %}
+                    <span class="px-3 py-1 bg-blue-600 text-white rounded">{{ page }}</span>
+                    {% elif page > result_list.number|add:'-3' and page < result_list.number|add:'3' %}
+                    <a href="?p={{ page }}" class="px-3 py-1 rounded hover:bg-gray-100">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if result_list.has_next %}
+                <a href="?p={{ result_list.next_page_number }}" class="px-3 py-1 rounded hover:bg-gray-100">Next</a>
+                <a href="?p={{ result_list.paginator.num_pages }}" class="px-3 py-1 rounded hover:bg-gray-100">&raquo;</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+    document.getElementById('action-toggle').addEventListener('change', function() {
+        document.querySelectorAll('.action-select').forEach(cb => cb.checked = this.checked);
+    });
+</script>
+{% endblock %}

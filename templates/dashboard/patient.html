@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Dashboard - Dr. Sheba</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f6fa; display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: #2c3e50; color: white; padding: 20px; position: fixed; height: 100vh; }
+        .sidebar h2 { margin-bottom: 30px; font-size: 24px; text-align: center; }
+        .sidebar nav { display: flex; flex-direction: column; }
+        .sidebar nav a { color: #bdc3c7; text-decoration: none; padding: 12px 15px; border-radius: 5px; margin-bottom: 5px; transition: 0.3s; }
+        .sidebar nav a:hover, .sidebar nav a.active { background: #34495e; color: white; }
+        .main-content { margin-left: 250px; padding: 30px; flex: 1; }
+        .header { margin-bottom: 30px; }
+        .header h1 { color: #2c3e50; }
+        .stats { display: flex; gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); flex: 1; text-align: center; }
+        .stat-card.blue { border-top: 4px solid #3498db; }
+        .stat-card.green { border-top: 4px solid #27ae60; }
+        .stat-card.red { border-top: 4px solid #e74c3c; }
+        .stat-number { font-size: 36px; font-weight: bold; color: #2c3e50; }
+        .stat-label { color: #7f8c8d; margin-top: 5px; }
+        .section { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .section h2 { color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ecf0f1; }
+        th { background: #f8f9fa; color: #2c3e50; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; }
+        .badge-confirmed { background: #d4edda; color: #155724; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-cancelled { background: #f8d7da; color: #721c24; }
+        .badge-completed { background: #d1ecf1; color: #0c5460; }
+        .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-cancel { background: #e74c3c; color: white; }
+        .btn-cancel:hover { background: #c0392b; }
+        .btn-search { background: #3498db; color: white; padding: 10px 20px; }
+        .search-widget { display: flex; gap: 10px; }
+        .search-widget input { padding: 10px; border: 1px solid #ddd; border-radius: 5px; flex: 1; }
+        .recent-list { list-style: none; }
+        .recent-list li { padding: 10px; border-bottom: 1px solid #ecf0f1; display: flex; justify-content: space-between; }
+        .recent-list li:last-child { border-bottom: none; }
+        .empty-state { color: #7f8c8d; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dr. Sheba</h2>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'dashboard:patient' %}" class="active">My Appointments</a>
+            <a href="{% url 'doctors:list' %}">Find Doctors</a>
+            <a href="#">Profile</a>
+            <a href="{% url 'account_logout' %}">Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Welcome, {{ user.get_full_name|default:user.username }}</h1>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card blue">
+                <div class="stat-number">{{ upcoming_count }}</div>
+                <div class="stat-label">Upcoming</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-number">{{ completed_count }}</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-number">{{ cancelled_count }}</div>
+                <div class="stat-label">Cancelled</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Upcoming Appointments</h2>
+            {% if upcoming_appointments %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Specialization</th>
+                        <th>Date/Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for apt in upcoming_appointments %}
+                    <tr>
+                        <td>Dr. {{ apt.doctor.user.get_full_name }}</td>
+                        <td>
+                            {% for spec in apt.doctor.specializations.all %}
+                                {{ spec.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{ apt.time_slot.date }} {{ apt.time_slot.start_time }}</td>
+                        <td><span class="badge badge-confirmed">{{ apt.get_status_display }}</span></td>
+                        <td>
+                            <a href="{% url 'appointments:detail' apt.pk %}" class="btn" style="background:#3498db;color:white;">View</a>
+                            <form method="post" action="{% url 'appointments:cancel' apt.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-cancel" onclick="return confirm('Cancel this appointment?')">Cancel</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">No upcoming appointments. <a href="{% url 'doctors:list' %}">Find a doctor</a></p>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2>Recent Past Appointments</h2>
+            {% if past_appointments %}
+            <ul class="recent-list">
+                {% for apt in past_appointments %}
+                <li>
+                    <span>Dr. {{ apt.doctor.user.get_full_name }} - {{ apt.time_slot.date }}</span>
+                    <span class="badge badge-completed">{{ apt.get_status_display }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="empty-state">No past appointments.</p>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2>Quick Find a Doctor</h2>
+            <form action="{% url 'doctors:search' %}" method="get" class="search-widget">
+                <input type="text" name="q" placeholder="Search by doctor name or specialization...">
+                <button type="submit" class="btn btn-search">Search</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

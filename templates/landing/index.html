@@ -1,9 +1,37 @@
-{% extends "account/base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Sheba - Find & Book Doctors Instantly</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600">Dr. Sheba</a>
+                <div class="flex items-center gap-4">
+                    {% if user.is_authenticated %}
+                        {% if user.role == 'patient' %}
+                            <a href="{% url 'dashboard:patient' %}" class="text-gray-600 hover:text-blue-600">Dashboard</a>
+                        {% elif user.role == 'doctor' %}
+                            <a href="/dashboard/doctor/" class="text-gray-600 hover:text-blue-600">Dashboard</a>
+                        {% elif user.role == 'admin' %}
+                            <a href="/adminpanel/" class="text-gray-600 hover:text-blue-600">Admin</a>
+                        {% endif %}
+                        <a href="{% url 'account_logout' %}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Logout</a>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="text-gray-600 hover:text-blue-600 font-medium">Login</a>
+                        <a href="{% url 'register_choose' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
 
-{% block title %}Dr. Sheba - Find & Book Doctors Instantly{% endblock %}
-
-{% block content %}
-<div class="w-full">
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
         <div class="absolute inset-0 bg-black opacity-10"></div>
@@ -12,9 +40,9 @@
             <p class="text-xl text-blue-100 mb-8">Your health is our priority. Connect with top doctors near you.</p>
 
             <!-- Search Bar -->
-            <form class="max-w-2xl mx-auto">
+            <form action="{% url 'doctors:search' %}" method="get" class="max-w-2xl mx-auto">
                 <div class="flex flex-col md:flex-row gap-3 bg-white rounded-xl p-2">
-                    <input type="text" placeholder="Search by doctor name or specialization..."
+                    <input type="text" name="q" placeholder="Search by doctor name or specialization..."
                         class="flex-1 px-4 py-3 rounded-lg text-gray-700 outline-none">
                     <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
                         Search
@@ -30,7 +58,7 @@
             <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Our Specializations</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {% for spec in specializations %}
-                <a href="#" class="bg-white rounded-xl p-6 text-center shadow-md hover:shadow-lg transition group">
+                <a href="{% url 'doctors:search' %}?q={{ spec.name }}" class="bg-white rounded-xl p-6 text-center shadow-md hover:shadow-lg transition group">
                     <div class="w-14 h-14 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition">
                         <svg class="w-7 h-7 text-blue-600 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
@@ -99,9 +127,9 @@
                             <span class="text-gray-400 text-sm">({{ doctor.total_reviews }} reviews)</span>
                         </div>
                         <p class="text-center text-gray-900 font-bold mt-3">${{ doctor.consultation_fee }}</p>
-                        <button class="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+                        <a href="{% url 'doctors:detail' doctor.pk %}" class="block w-full mt-4 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 text-center transition">
                             Book Now
-                        </button>
+                        </a>
                     </div>
                 </div>
                 {% empty %}
@@ -143,5 +171,5 @@
             </a>
         </div>
     </section>
-</div>
-{% endblock %}
+</body>
+</html>

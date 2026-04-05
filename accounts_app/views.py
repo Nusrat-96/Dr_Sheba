@@ -39,7 +39,7 @@ class RoleBasedRedirectView(View):
 
         role = getattr(request.user, 'role', None)
         if role == 'patient':
-            return redirect('/')
+            return redirect('dashboard:patient')
         elif role == 'doctor':
             return redirect('/dashboard/doctor/')
         elif role == 'admin':

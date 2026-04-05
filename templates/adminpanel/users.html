@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Users - Admin - Dr. Sheba</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f6fa; display: flex; min-height: 100vh; }
+        .topbar { background: #e74c3c; color: white; padding: 10px 20px; position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        .topbar span { font-weight: bold; font-size: 14px; }
+        .sidebar { width: 250px; background: #2c3e50; color: white; padding: 20px; position: fixed; top: 45px; height: calc(100vh - 45px); }
+        .sidebar h2 { margin-bottom: 30px; font-size: 20px; text-align: center; }
+        .sidebar nav { display: flex; flex-direction: column; }
+        .sidebar nav a { color: #bdc3c7; text-decoration: none; padding: 12px 15px; border-radius: 5px; margin-bottom: 5px; transition: 0.3s; }
+        .sidebar nav a:hover, .sidebar nav a.active { background: #34495e; color: white; }
+        .main-content { margin-left: 250px; margin-top: 45px; padding: 30px; flex: 1; }
+        .header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { color: #2c3e50; }
+        .filters { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filters label { display: flex; flex-direction: column; font-size: 12px; color: #7f8c8d; }
+        .filters select { padding: 8px; border: 1px solid #ddd; border-radius: 5px; }
+        .btn-filter { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .section { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .section h2 { color: #2c3e50; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ecf0f1; }
+        th { background: #f8f9fa; color: #2c3e50; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; }
+        .badge-patient { background: #d4edda; color: #155724; }
+        .badge-doctor { background: #cce5ff; color: #004085; }
+        .badge-admin { background: #e2e3e5; color: #383d41; }
+        .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; font-size: 14px; background: #3498db; color: white; }
+        .empty-state { color: #7f8c8d; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <span>ADMIN PANEL - Dr. Sheba</span>
+    </div>
+
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'adminpanel:dashboard' %}">Dashboard</a>
+            <a href="{% url 'adminpanel:appointments' %}">Appointments</a>
+            <a href="{% url 'adminpanel:users' %}" class="active">Users</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>All Users</h1>
+        </div>
+
+        <div class="section">
+            <form method="get" class="filters">
+                <label>Role
+                    <select name="role">
+                        <option value="">All</option>
+                        <option value="patient" {% if role_filter == 'patient' %}selected{% endif %}>Patient</option>
+                        <option value="doctor" {% if role_filter == 'doctor' %}selected{% endif %}>Doctor</option>
+                        <option value="admin" {% if role_filter == 'admin' %}selected{% endif %}>Admin</option>
+                    </select>
+                </label>
+                <button type="submit" class="btn-filter">Filter</button>
+                <a href="{% url 'adminpanel:users' %}" class="btn-filter" style="background:#6c757d;">Clear</a>
+            </form>
+        </div>
+
+        <div class="section">
+            {% if users %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Appointments</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>#{{ user.pk }}</td>
+                        <td>{{ user.get_full_name|default:user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td><span class="badge badge-{{ user.role }}">{{ user.get_role_display }}</span></td>
+                        <td>{{ user.appointment_count }}</td>
+                        <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">No users found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Appointment with Dr. {{ doctor.user.get_full_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .doctor-info { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .date-group { margin-bottom: 20px; }
+        .date-header { font-weight: bold; margin-bottom: 10px; }
+        .slots { display: flex; flex-wrap: wrap; gap: 10px; }
+        .slot-btn { padding: 10px 15px; border: 1px solid #007bff; background: white; border-radius: 5px; cursor: pointer; }
+        .slot-btn:hover { background: #007bff; color: white; }
+        .no-slots { color: #666; }
+    </style>
+</head>
+<body>
+    <h1>Book Appointment</h1>
+
+    <div class="doctor-info">
+        <h2>Dr. {{ doctor.user.get_full_name }}</h2>
+        <p>Specializations: {% for spec in doctor.specializations.all %}{{ spec.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        <p>Consultation Fee: ${{ doctor.consultation_fee }}</p>
+        <p>Experience: {{ doctor.years_of_experience }} years</p>
+    </div>
+
+    <h2>Select a Time Slot</h2>
+
+    <form method="post" action="{% url 'appointments:book' doctor.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="time_slot_id" id="selected_slot_id" value="">
+
+        {% if slots_by_date %}
+            {% for date_info in slots_by_date.values %}
+                <div class="date-group">
+                    <div class="date-header">{{ date_info.date }}</div>
+                    <div class="slots">
+                        {% for slot in date_info.slots %}
+                            <button type="button" class="slot-btn"
+                                    onclick="selectSlot({{ slot.id }}, '{{ slot.start_time }} - {{ slot.end_time }}')">
+                                {{ slot.start_time }} - {{ slot.end_time }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div style="margin-top: 20px;">
+                <label for="reason">Reason for visit (optional):</label><br>
+                <textarea name="reason" id="reason" rows="3" cols="50"></textarea>
+            </div>
+
+            <button type="submit" id="book_btn" style="margin-top: 15px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;" disabled>
+                Select a time slot above
+            </button>
+        {% else %}
+            <p class="no-slots">No available slots in the next 7 days. Please check back later.</p>
+        {% endif %}
+    </form>
+
+    <script>
+        function selectSlot(slotId, timeStr) {
+            document.getElementById('selected_slot_id').value = slotId;
+            document.getElementById('book_btn').disabled = false;
+            document.getElementById('book_btn').textContent = 'Book Appointment at ' + timeStr;
+        }
+    </script>
+</body>
+</html>

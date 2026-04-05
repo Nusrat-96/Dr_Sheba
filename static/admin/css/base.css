@@ -1,0 +1,319 @@
+/* Dr. Sheba Admin Custom Styles */
+
+/* Form Fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+textarea,
+select {
+    display: block;
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #374151;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: all 0.15s ease-in-out;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d1d5db;
+    color: #3b82f6;
+}
+
+input[type="checkbox"]:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Date/Calendar Inputs */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+    display: block;
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #374151;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+}
+
+/* File Input */
+input[type="file"] {
+    display: block;
+    width: 100%;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Form Errors */
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+}
+
+.errorlist li {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+tr.error {
+    background-color: #fef2f2;
+}
+
+td span.error {
+    color: #dc2626;
+    font-size: 0.75rem;
+}
+
+/* Form Labels */
+label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+/* Required Field Indicator */
+.required label::after {
+    content: " *";
+    color: #dc2626;
+}
+
+/* Fieldset Styles */
+fieldset {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: #fff;
+}
+
+fieldset legend {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    padding: 0 0.5rem;
+}
+
+/* Inline Forms */
+.inline-group {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.inline-group .inline-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+/* Raw ID Widget */
+.raw-id-input {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.raw-id-input input {
+    flex: 1;
+}
+
+/* Autocomplete Dropdown */
+.autocomplete-light-widget {
+    position: relative;
+}
+
+/* Select2 or Chosen overrides */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+/* Date Hierarchy */
+.date-hierarchy {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.date-hierarchy a {
+    padding: 0.5rem 1rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.date-hierarchy a:hover {
+    background: #f3f4f6;
+}
+
+.date-hierarchy .this-period {
+    background: #3b82f6;
+    color: #fff;
+    border-color: #3b82f6;
+}
+
+/* Object Tools */
+.object-tools {
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.object-tools li {
+    display: inline-block;
+}
+
+.object-tools a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    background: #3b82f6;
+    color: #fff;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.15s;
+}
+
+.object-tools a:hover {
+    background: #2563eb;
+}
+
+.object-tools a.viewsitelink,
+.object-tools a.historylink {
+    background: #6b7280;
+}
+
+.object-tools a.viewsitelink:hover,
+.object-tools a.historylink:hover {
+    background: #4b5563;
+}
+
+.object-tools a.deletelink {
+    background: #dc2626;
+}
+
+.object-tools a.deletelink:hover {
+    background: #b91c1c;
+}
+
+/* Submission Row */
+.submit-row {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 1rem;
+    border-radius: 0 0 0.75rem 0.75rem;
+}
+
+.submit-row button,
+.submit-row input[type="submit"] {
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.submit-row button.default,
+.submit-row input[type="submit"].default {
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+}
+
+.submit-row button.default:hover,
+.submit-row input[type="submit"].default:hover {
+    background: #2563eb;
+}
+
+.submit-row button,
+.submit-row input[type="submit"]:not(.default) {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+.submit-row button:hover,
+.submit-row input[type="submit"]:not(.default):hover {
+    background: #f3f4f6;
+}
+
+.submit-row .deletelink-box {
+    margin-left: auto;
+}
+
+.submit-row .deletelink-box a,
+.submit-row .deletelink-box input {
+    background: #fff;
+    border: 1px solid #fca5a5;
+    color: #dc2626;
+}
+
+.submit-row .deletelink-box a:hover,
+.submit-row .deletelink-box input:hover {
+    background: #fef2f2;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+    .lg\:col-span-2 {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .object-tools {
+        flex-wrap: wrap;
+    }
+
+    .submit-row {
+        flex-direction: column;
+    }
+
+    .submit-row .deletelink-box {
+        margin-left: 0;
+    }
+}

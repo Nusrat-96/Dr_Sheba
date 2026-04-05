@@ -184,6 +184,7 @@ Thank you!""",
 
 class AppointmentDetailView(LoginRequiredMixin, View):
     """Show appointment details."""
+    template_name = 'appointments/detail.html'
 
     def get(self, request, pk):
         appointment = get_object_or_404(Appointment, pk=pk)

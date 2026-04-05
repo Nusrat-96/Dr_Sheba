@@ -1,0 +1,58 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Delete {{ title }} - Dr. Sheba Admin{% endblock %}
+
+{% block page_header %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Delete {{ model_name }}</h1>
+</div>
+{% endblock %}
+
+{% block content_inner %}
+<div class="p-6 max-w-2xl mx-auto">
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div class="p-6">
+            {% if perms_lacking %}
+            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-6">
+                <p class="text-yellow-800 font-medium">Deletion not allowed.</p>
+                <p class="text-yellow-700 text-sm mt-1">You don't have permission to delete this {{ model_name }}.</p>
+            </div>
+            {% elif protected %}
+            <div class="p-4 bg-red-50 border border-red-200 rounded-lg mb-6">
+                <p class="text-red-800 font-medium">Cannot delete.</p>
+                <p class="text-red-700 text-sm mt-1">This {{ model_name }} is required by other objects.</p>
+            </div>
+            {% else %}
+            <p class="text-gray-700 mb-6">
+                Are you sure you want to delete the {{ model_name }} "<strong>{{ object }}</strong>"? All of the following related items will be deleted:
+            </p>
+
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <ul class="list-disc list-inside text-gray-600 text-sm space-y-1">
+                    {% for deletion in deletable_objects %}
+                    <li>{{ deletion }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="post" value="yes">
+                {% if is_popup %}
+                <input type="hidden" name="_popup" value="1">
+                {% endif %}
+
+                <div class="flex items-center gap-4">
+                    <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition">
+                        Yes, Delete
+                    </button>
+                    <a href="{{ cancel_url }}" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

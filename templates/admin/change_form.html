@@ -1,0 +1,146 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} - Dr. Sheba Admin{% endblock %}
+
+{% block page_actions %}
+<div class="flex gap-3">
+    <button type="submit" form="change-form" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Save {% if is_popup %}and Close{% endif %}
+    </button>
+    {% if change %}
+    {% if show_delete_link %}
+    <a href="{{ delete_url }}" class="px-4 py-2 bg-red-50 text-red-600 rounded-lg font-medium hover:bg-red-100 transition flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+        Delete
+    </a>
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content_inner %}
+<div class="p-6">
+    <form id="change-form" method="post" {% if has_file_field %}enctype="multipart/form-data"{% endif %}>
+        {% csrf_token %}
+
+        {% if is_popup %}
+        <input type="hidden" name="_popup" value="1">
+        {% endif %}
+
+        {% if save_on_top %}
+        <div class="mb-6 pb-6 border-b border-gray-200 flex justify-end gap-3">
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">
+                Save {% if is_popup %}and Close{% endif %}
+            </button>
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Main Form Fields -->
+            <div class="lg:col-span-2 space-y-6">
+                {% block form_top %}{% endblock %}
+
+                {% if errors %}
+                <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <div class="text-red-800 font-medium mb-2">Please correct the following errors:</div>
+                    <ul class="list-disc list-inside text-red-600 text-sm">
+                        {% for error in errors.values %}
+                        {% for e in error %}
+                        <li>{{ e }}</li>
+                        {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% for fieldset in adminform %}
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    {% if fieldset.title %}
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">{{ fieldset.title }}</h3>
+                    </div>
+                    {% endif %}
+                    <div class="p-6">
+                        {% if fieldset.description %}
+                        <p class="text-gray-500 text-sm mb-4">{{ fieldset.description }}</p>
+                        {% endif %}
+                        <div class="space-y-4">
+                            {% for line in fieldset %}
+                            <div class="flex flex-wrap {% if line.errors %}has-error{% endif %}">
+                                <div class="w-full {% if line.fields|length > 1 %}md:w-1/{{ line.fields|length }}{% endif %}">
+                                    {% if line.errors %}
+                                    {% for error in line.errors %}
+                                    <span class="text-red-500 text-sm">{{ error }}</span>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                                {% for field in line %}
+                                <div class="{% if not line.fields|length_is:'1' %}w-full md:w-1/{{ line.fields|length }}{% endif %} {% if field.is_readonly %}readonly{% endif %}">
+                                    {% if field.is_readonly %}
+                                    <div class="text-gray-600">{{ field.contents }}</div>
+                                    {% else %}
+                                    {{ field }}
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% block after_fieldset %}{% endblock %}
+
+                {% inline_admin_formset %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Publish Box -->
+                {% if save_on_top %}
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-800 uppercase tracking-wider">Save Options</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">
+                                Save
+                            </button>
+                            <button type="submit" name="_saveasnew" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition">
+                                Save as New
+                            </button>
+                            <button type="submit" name="_addanother" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition">
+                                Save and Add Another
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- History Box -->
+                {% if change %}
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-800 uppercase tracking-wider">History</h3>
+                    </div>
+                    <div class="p-6">
+                        <a href="history/" class="text-blue-600 hover:text-blue-800 text-sm">
+                            View History
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% block after_related_widgets %}{% endblock %}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
